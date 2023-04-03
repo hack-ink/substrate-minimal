@@ -1,0 +1,17 @@
+[package]
+authors.workspace    = true
+description          = "Minimal implementation of Substrate crypto."
+edition.workspace    = true
+homepage.workspace   = true
+license.workspace    = true
+name                 = "subcryptor"
+readme               = "README.md"
+repository.workspace = true
+version.workspace    = true
+
+[dependencies]
+# crates.io
+base58        = { version = "0.2" }
+blake2-rfc    = { version = "0.2" }
+ss58-registry = { version = "1.39" }
+thiserror     = { workspace = true }

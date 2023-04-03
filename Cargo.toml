@@ -1,11 +1,41 @@
-[package]
-authors     = ["Xavier Lau <xavier@inv.cafe>"]
-build       = "build.rs"
-description = "<DESCRIPTION>"
-edition     = "2021"
-homepage    = "https://<NAME>.hack.ink"
-license     = "GPL-3.0"
-name        = "<NAME>"
-readme      = "README.md"
-repository  = "https://github.com/hack-ink/<NAME>"
-version     = "0.1.0"
+[workspace]
+members = [
+	"subcryptor",
+	"subhasher",
+	"submetadatan",
+	"subrpcer",
+	"subruntimer",
+	"subspector",
+	"substorager",
+	"subversioner",
+]
+
+	[workspace.package]
+	authors    = ["Xavier Lau <xavier@inv.cafe>"]
+	edition    = "2021"
+	homepage   = "https://substrate-minimal.hack.ink"
+	license    = "GPL-3.0"
+	repository = "https://github.com/hack-ink/substrate-minimal"
+	version    = "0.9.2"
+
+	[workspace.dependencies]
+	# crates.io
+	array-bytes        = { version = "6.0" }
+	fxhash             = { version = "0.2" }
+	once_cell          = { version = "1.17" }
+	parity-scale-codec = { version = "3.4" }
+	reqwest            = { version = "0.11" }
+	serde              = { version = "1.0" }
+	serde_json         = { version = "1.0" }
+	thiserror          = { version = "1.0" }
+	tracing            = { version = "0.1" }
+
+	# hack-ink
+	subcryptor   = { version = "0.9.1", path = "subcryptor" }
+	subhasher    = { version = "0.9.1", path = "subhasher" }
+	submetadatan = { version = "0.9.1", path = "submetadatan" }
+	subrpcer     = { version = "0.9.1", path = "subrpcer" }
+	subruntimer  = { version = "0.9.1", path = "subruntimer" }
+	subspector   = { version = "0.9.1", path = "subspector" }
+	substorager  = { version = "0.9.1", path = "substorager" }
+	subversioner = { version = "0.9.1", path = "subversioner" }
