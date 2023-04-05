@@ -125,7 +125,7 @@ pub fn rpc(id: usize, method: &str, params: Value) -> Value {
 /// This will output a trace-level log about the RPC call detail.
 #[cfg(feature = "tracing")]
 pub fn debug(rpc: Value) -> Value {
-	tracing::trace!("{rpc:?}");
+	tracing::trace!("Rpc({:?})", serde_json::to_string(&rpc).unwrap());
 
 	rpc
 }

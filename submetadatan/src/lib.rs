@@ -6,12 +6,16 @@
 mod error;
 pub use error::Error;
 
+pub mod minimal;
+pub use minimal::Metadata as MinimalMetadata;
+
 pub use frame_metadata::{RuntimeMetadataV14 as LatestRuntimeMetadata, *};
 pub use scale_info::*;
 
 // std
 use std::any::TypeId;
 // crates.io
+use parity_scale_codec::Decode;
 use scale_info::{
 	form::PortableForm, interner::UntrackedSymbol, Field, Type, TypeDef, TypeParameter, Variant,
 };
@@ -19,12 +23,55 @@ use scale_info::{
 /// Main result.
 pub type Result<T> = std::result::Result<T, Error>;
 
+///
+pub trait Meta {
+	///
+	fn storage<'a, 'b>(&'a self, pallet: &str, item: &'b str) -> Option<StorageEntry<'b>>
+	where
+		'a: 'b;
+}
+
+///
+pub struct StorageEntry<'a> {
+	///
+	pub prefix: &'a str,
+	///
+	pub item: &'a str,
+	///
+	pub r#type: &'a minimal::StorageEntryType,
+}
+
 /// Try extracting [`LatestRuntimeMetadata`] from [`RuntimeMetadataPrefixed`].
-pub fn metadata(metadata: RuntimeMetadataPrefixed) -> Result<LatestRuntimeMetadata> {
+pub fn unprefix_metadata(metadata: RuntimeMetadataPrefixed) -> Result<LatestRuntimeMetadata> {
 	match metadata.1 {
 		RuntimeMetadata::V14(metadata) => Ok(metadata),
 		metadata => Err(Error::UnsupportedVersion(metadata.version())),
 	}
+}
+/// Try extracting [`LatestRuntimeMetadata`] from [`AsRef<str>`].
+pub fn unprefix_raw_metadata<R>(raw_metadata: R) -> Result<LatestRuntimeMetadata>
+where
+	R: AsRef<str>,
+{
+	unprefix_metadata(
+		RuntimeMetadataPrefixed::decode(
+			&mut &*array_bytes::hex2bytes(raw_metadata.as_ref())
+				.map_err(error::Error::ArrayBytes)?,
+		)
+		.map_err(error::Error::Codec)?,
+	)
+}
+
+/// Try extracting [`MinimalMetadata`] from [`RuntimeMetadataPrefixed`].
+pub fn unprefix_metadata_minimal(metadata: RuntimeMetadataPrefixed) -> Result<MinimalMetadata> {
+	Ok(unprefix_metadata(metadata)?.into())
+}
+/// Try extracting [`MinimalMetadata`] from [`AsRef<str>`].
+pub fn unprefix_raw_metadata_minimal<R>(raw_metadata: R) -> Result<MinimalMetadata>
+where
+	R: AsRef<str>,
+{
+	Ok(unprefix_raw_metadata(raw_metadata)?.into())
 }
 
 /// Compare two [`StorageEntryMetadata`] and return the [`bool`] result.

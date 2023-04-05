@@ -62,7 +62,7 @@ impl From<&[u8]> for StorageKey {
 ///
 /// Substrate reference(s):
 /// - <https://github.com/paritytech/substrate/blob/c4d36065764ee23aeb3ccd181c4b6ecea8d2447a/frame/support/src/hash.rs#L25-L34>
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "codec", derive(Encode, Decode))]
 pub enum StorageHasher {
 	#[allow(missing_docs)]
@@ -77,23 +77,32 @@ pub enum StorageHasher {
 	Twox256,
 	#[allow(missing_docs)]
 	Twox64Concat,
+	#[allow(missing_docs)]
+	Identity,
 }
 impl StorageHasher {
 	/// Hash the data and make it into a [`StorageKey`].
-	pub fn hash(&self, data: &[u8]) -> StorageKey {
+	pub fn hash<A>(&self, data: A) -> StorageKey
+	where
+		A: AsRef<[u8]>,
+	{
 		match self {
-			StorageHasher::Blake2_128 => subhasher::blake2_128(data).into(),
-			StorageHasher::Blake2_256 => subhasher::blake2_256(data).into(),
-			StorageHasher::Blake2_128Concat => subhasher::blake2_128_concat(data).into(),
-			StorageHasher::Twox128 => subhasher::twox128(data).into(),
-			StorageHasher::Twox256 => subhasher::twox256(data).into(),
-			StorageHasher::Twox64Concat => subhasher::twox64_concat(data).into(),
+			Self::Blake2_128 => subhasher::blake2_128(data).into(),
+			Self::Blake2_256 => subhasher::blake2_256(data).into(),
+			Self::Blake2_128Concat => subhasher::blake2_128_concat(data).into(),
+			Self::Twox128 => subhasher::twox128(data).into(),
+			Self::Twox256 => subhasher::twox256(data).into(),
+			Self::Twox64Concat => subhasher::twox64_concat(data).into(),
+			Self::Identity => subhasher::identity(data.as_ref()).into(),
 		}
 	}
 }
 
 /// Calculate the storage key of a pallet `StorageValue` item.
-pub fn storage_key(pallet: &[u8], item: &[u8]) -> StorageKey {
+pub fn storage_key<A>(pallet: A, item: A) -> StorageKey
+where
+	A: AsRef<[u8]>,
+{
 	let mut storage_key = Vec::new();
 
 	storage_key.extend_from_slice(&subhasher::twox128(pallet));
@@ -102,26 +111,14 @@ pub fn storage_key(pallet: &[u8], item: &[u8]) -> StorageKey {
 	storage_key.into()
 }
 
-/// Calculate the storage key of a pallet `StorageMap` item.
-pub fn storage_map_key(pallet: &[u8], item: &[u8], key: (&StorageHasher, &[u8])) -> StorageKey {
+/// Calculate the storage key of a pallet `StorageNMap` item.
+pub fn storage_n_map_key<A>(pallet: A, item: A, key: (&StorageHasher, A)) -> StorageKey
+where
+	A: AsRef<[u8]>,
+{
 	let mut storage_map_key = storage_key(pallet, item);
 
 	storage_map_key.0.extend_from_slice(&key.0.hash(key.1));
 
 	storage_map_key
-}
-
-/// Calculate the storage key of a pallet `StorageDoubleMap` item.
-pub fn storage_double_map_key(
-	pallet: &[u8],
-	item: &[u8],
-	key1: (StorageHasher, &[u8]),
-	key2: (StorageHasher, &[u8]),
-) -> StorageKey {
-	let mut storage_double_map_key = storage_key(pallet, item);
-
-	storage_double_map_key.0.extend_from_slice(&key1.0.hash(key1.1));
-	storage_double_map_key.0.extend_from_slice(&key2.0.hash(key2.1));
-
-	storage_double_map_key
 }
