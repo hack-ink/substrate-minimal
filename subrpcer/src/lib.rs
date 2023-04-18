@@ -112,19 +112,14 @@ use serde_json::Value;
 
 /// Build a JSONRPC 2.0 call.
 pub fn rpc(id: usize, method: &str, params: Value) -> Value {
-	serde_json::json!({
+	let rpc = serde_json::json!({
 		"jsonrpc": "2.0",
 		"id": id,
 		"method": method,
 		"params": params
-	})
-}
+	});
 
-/// A debug wrapper for the RPC payload.
-///
-/// This will output a trace-level log about the RPC call detail.
-#[cfg(feature = "tracing")]
-pub fn debug(rpc: Value) -> Value {
+	#[feature = "tracing"]
 	tracing::trace!("Rpc({:?})", serde_json::to_string(&rpc).unwrap());
 
 	rpc

@@ -3,48 +3,31 @@
 #![deny(missing_docs)]
 #![deny(unused_crate_dependencies)]
 
-mod error;
+pub mod error;
 pub use error::Error;
 
-pub mod minimal;
-pub use minimal::Metadata as MinimalMetadata;
+pub mod metadata;
+pub use metadata::*;
 
-pub use frame_metadata::{RuntimeMetadataV14 as LatestRuntimeMetadata, *};
-pub use scale_info::*;
+#[cfg(feature = "cmp")]
+pub mod cmp;
 
-// std
-use std::any::TypeId;
+pub use frame_metadata::{self, RuntimeMetadataV14 as LatestRuntimeMetadata};
+pub use parity_scale_codec;
+pub use scale_info;
+
 // crates.io
 use parity_scale_codec::Decode;
-use scale_info::{
-	form::PortableForm, interner::UntrackedSymbol, Field, Type, TypeDef, TypeParameter, Variant,
-};
 
 /// Main result.
 pub type Result<T> = std::result::Result<T, Error>;
 
-///
-pub trait Meta {
-	///
-	fn storage<'a, 'b>(&'a self, pallet: &str, item: &'b str) -> Option<StorageEntry<'b>>
-	where
-		'a: 'b;
-}
-
-///
-pub struct StorageEntry<'a> {
-	///
-	pub prefix: &'a str,
-	///
-	pub item: &'a str,
-	///
-	pub r#type: &'a minimal::StorageEntryType,
-}
-
-/// Try extracting [`LatestRuntimeMetadata`] from [`RuntimeMetadataPrefixed`].
-pub fn unprefix_metadata(metadata: RuntimeMetadataPrefixed) -> Result<LatestRuntimeMetadata> {
+/// Try extracting [`LatestRuntimeMetadata`] from [`frame_metadata::RuntimeMetadataPrefixed`].
+pub fn unprefix_metadata(
+	metadata: frame_metadata::RuntimeMetadataPrefixed,
+) -> Result<LatestRuntimeMetadata> {
 	match metadata.1 {
-		RuntimeMetadata::V14(metadata) => Ok(metadata),
+		frame_metadata::RuntimeMetadata::V14(metadata) => Ok(metadata),
 		metadata => Err(Error::UnsupportedVersion(metadata.version())),
 	}
 }
@@ -54,7 +37,7 @@ where
 	R: AsRef<str>,
 {
 	unprefix_metadata(
-		RuntimeMetadataPrefixed::decode(
+		frame_metadata::RuntimeMetadataPrefixed::decode(
 			&mut &*array_bytes::hex2bytes(raw_metadata.as_ref())
 				.map_err(error::Error::ArrayBytes)?,
 		)
@@ -62,241 +45,16 @@ where
 	)
 }
 
-/// Try extracting [`MinimalMetadata`] from [`RuntimeMetadataPrefixed`].
-pub fn unprefix_metadata_minimal(metadata: RuntimeMetadataPrefixed) -> Result<MinimalMetadata> {
+/// Try extracting [`Metadata`] from [`frame_metadata::RuntimeMetadataPrefixed`].
+pub fn unprefix_metadata_minimal(
+	metadata: frame_metadata::RuntimeMetadataPrefixed,
+) -> Result<Metadata> {
 	Ok(unprefix_metadata(metadata)?.into())
 }
-/// Try extracting [`MinimalMetadata`] from [`AsRef<str>`].
-pub fn unprefix_raw_metadata_minimal<R>(raw_metadata: R) -> Result<MinimalMetadata>
+/// Try extracting [`Metadata`] from [`AsRef<str>`].
+pub fn unprefix_raw_metadata_minimal<R>(raw_metadata: R) -> Result<Metadata>
 where
 	R: AsRef<str>,
 {
 	Ok(unprefix_raw_metadata(raw_metadata)?.into())
-}
-
-/// Compare two [`StorageEntryMetadata`] and return the [`bool`] result.
-pub fn cmp_storage_entry(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &StorageEntryMetadata<PortableForm>,
-	b: &StorageEntryMetadata<PortableForm>,
-) -> bool {
-	a.name == b.name
-		&& a.modifier == b.modifier
-		&& a.default == b.default
-		&& a.docs == b.docs
-		&& cmp_storage_entry_type(a_types, b_types, &a.ty, &b.ty)
-}
-
-/// Compare two [`StorageEntryType`] and return the [`bool`] result.
-pub fn cmp_storage_entry_type(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &StorageEntryType<PortableForm>,
-	b: &StorageEntryType<PortableForm>,
-) -> bool {
-	match a {
-		StorageEntryType::Plain(a) => match b {
-			StorageEntryType::Plain(b) => cmp_untracked_symbol(a_types, b_types, a, b),
-			_ => false,
-		},
-		StorageEntryType::Map { hashers: a_hashers, key: a_key, value: a_value } => match b {
-			StorageEntryType::Map { hashers: b_hashers, key: b_key, value: b_value } =>
-				a_hashers == b_hashers
-					&& cmp_untracked_symbol(a_types, b_types, a_key, b_key)
-					&& cmp_untracked_symbol(a_types, b_types, a_value, b_value),
-			_ => false,
-		},
-	}
-}
-
-/// Compare two [`UntrackedSymbol`] and return the [`bool`] result.
-pub fn cmp_untracked_symbol(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &UntrackedSymbol<TypeId>,
-	b: &UntrackedSymbol<TypeId>,
-) -> bool {
-	cmp_type(a_types, b_types, a_types.resolve(a.id), b_types.resolve(b.id))
-}
-
-/// Compare two [`Type`] and return the [`bool`] result.
-pub fn cmp_type(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: Option<&Type<PortableForm>>,
-	b: Option<&Type<PortableForm>>,
-) -> bool {
-	if let Some(a) = a {
-		if let Some(b) = b {
-			a.path == b.path
-				&& a.docs == b.docs
-				&& cmp_type_params(a_types, b_types, &a.type_params, &b.type_params)
-				&& cmp_type_def(a_types, b_types, &a.type_def, &b.type_def)
-		} else {
-			false
-		}
-	} else {
-		b.is_none()
-	}
-}
-
-/// Compare two [`TypeParameter`] and return the [`bool`] result.
-pub fn cmp_type_params(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &[TypeParameter<PortableForm>],
-	b: &[TypeParameter<PortableForm>],
-) -> bool {
-	if a.is_empty() && b.is_empty() {
-		return true;
-	}
-	if a.len() != b.len() {
-		return false;
-	}
-
-	for (a, b) in a.iter().zip(b.iter()) {
-		if a.name != b.name {
-			return false;
-		}
-
-		if let Some(a_type) = &a.ty {
-			if let Some(b_type) = &b.ty {
-				return cmp_untracked_symbol(a_types, b_types, a_type, b_type);
-			} else {
-				return false;
-			}
-		} else if b.ty.is_some() {
-			return false;
-		}
-	}
-
-	true
-}
-
-/// Compare two [`TypeDef`] and return the [`bool`] result.
-pub fn cmp_type_def(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &TypeDef<PortableForm>,
-	b: &TypeDef<PortableForm>,
-) -> bool {
-	match a {
-		TypeDef::Composite(a) => match b {
-			TypeDef::Composite(b) => cmp_fields(a_types, b_types, &a.fields, &b.fields),
-			_ => false,
-		},
-		TypeDef::Variant(_a) => matches!(b, TypeDef::Variant(_b)),
-		// match b {
-		// 	TypeDef::Variant(_b) => {
-		// 		// TODO: check variants
-		// 		// cmp_variants(a_types, b_types, a.variants(), b.variants())
-		// 		true
-		// 	},
-		// 	_ => false,
-		// },
-		TypeDef::Sequence(a) => match b {
-			TypeDef::Sequence(b) =>
-				cmp_untracked_symbol(a_types, b_types, &a.type_param, &b.type_param),
-			_ => false,
-		},
-		TypeDef::Array(a) => match b {
-			TypeDef::Array(b) =>
-				a.len == b.len
-					&& cmp_untracked_symbol(a_types, b_types, &a.type_param, &b.type_param),
-			_ => false,
-		},
-		TypeDef::Tuple(a) => match b {
-			TypeDef::Tuple(b) => {
-				let a = &a.fields;
-				let b = &b.fields;
-
-				if a.is_empty() && b.is_empty() {
-					return true;
-				}
-				if a.len() != b.len() {
-					return false;
-				}
-
-				for (a, b) in a.iter().zip(b.iter()) {
-					if !cmp_untracked_symbol(a_types, b_types, a, b) {
-						return false;
-					}
-				}
-
-				true
-			},
-			_ => false,
-		},
-		TypeDef::Primitive(a) => match b {
-			TypeDef::Primitive(b) => a == b,
-			_ => false,
-		},
-		TypeDef::Compact(a) => match b {
-			TypeDef::Compact(b) =>
-				cmp_untracked_symbol(a_types, b_types, &a.type_param, &b.type_param),
-			_ => false,
-		},
-		TypeDef::BitSequence(a) => match b {
-			TypeDef::BitSequence(b) =>
-				cmp_untracked_symbol(a_types, b_types, &a.bit_order_type, &b.bit_order_type)
-					&& cmp_untracked_symbol(a_types, b_types, &a.bit_store_type, &b.bit_store_type),
-
-			_ => false,
-		},
-	}
-}
-
-/// Compare two [`Field`] and return the [`bool`] result.
-pub fn cmp_fields(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &[Field<PortableForm>],
-	b: &[Field<PortableForm>],
-) -> bool {
-	if a.is_empty() && b.is_empty() {
-		return true;
-	}
-	if a.len() != b.len() {
-		return false;
-	}
-
-	for (a, b) in a.iter().zip(b.iter()) {
-		if a.name != b.name
-			|| a.type_name != b.type_name
-			|| a.docs != b.docs
-			|| !cmp_untracked_symbol(a_types, b_types, &a.ty, &b.ty)
-		{
-			return false;
-		}
-	}
-
-	true
-}
-
-/// Compare two [`Variant`] and return the [`bool`] result.
-pub fn cmp_variants(
-	a_types: &PortableRegistry,
-	b_types: &PortableRegistry,
-	a: &[Variant<PortableForm>],
-	b: &[Variant<PortableForm>],
-) -> bool {
-	if a.is_empty() && b.is_empty() {
-		return true;
-	}
-	if a.len() != b.len() {
-		return false;
-	}
-
-	for (a, b) in a.iter().zip(b.iter()) {
-		if a.name != b.name
-			|| a.index != b.index
-			|| a.docs != b.docs
-			|| !cmp_fields(a_types, b_types, &a.fields, &b.fields)
-		{
-			return false;
-		}
-	}
-
-	true
 }

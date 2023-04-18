@@ -1,11 +1,21 @@
-//!
+//! Substrate metadata's minimal implementation.
+
+pub use Metadata as MetadataMinimal;
 
 // crates.io
 use fxhash::FxHashMap;
 use scale_info::form::PortableForm;
 use substorager::StorageHasher;
 // substrate-minimal
-use crate::{LatestRuntimeMetadata, Meta, StorageEntry};
+use crate::LatestRuntimeMetadata;
+
+/// Some useful functions to access the metadata.
+pub trait Meta {
+	/// Get the storage entry.
+	fn storage<'a, 'b>(&'a self, pallet: &str, item: &'b str) -> Option<StorageEntry<'b>>
+	where
+		'a: 'b;
+}
 
 trait KV {
 	type V;
@@ -13,10 +23,10 @@ trait KV {
 	fn kv(self) -> (String, Self::V);
 }
 
-///
-#[derive(Clone, Debug, PartialEq, Eq)]
+/// Metadata minimal implementation.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct Metadata {
-	///
+	/// Pallet metadata(s).
 	pub pallets: FxHashMap<String, PalletMetadata>,
 }
 impl From<LatestRuntimeMetadata> for Metadata {
@@ -35,12 +45,22 @@ impl Meta for Metadata {
 	}
 }
 
-///
+/// Storage entry minimal implementation.
+pub struct StorageEntry<'a> {
+	/// Pallet prefix.
+	pub prefix: &'a str,
+	/// Item name.
+	pub item: &'a str,
+	/// Storage type.
+	pub r#type: &'a StorageEntryType,
+}
+
+/// Pallet metadata minimal implementation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PalletMetadata {
-	///
+	/// Pallet index.
 	pub index: u8,
-	///
+	/// Pallet storage metadata.
 	pub storages: Option<PalletStorageMetadata>,
 	// pub calls: Option<CallMetadata>,
 	// pub events: Option<EventMetadata>,
@@ -55,12 +75,12 @@ impl KV for frame_metadata::PalletMetadata<PortableForm> {
 	}
 }
 
-///
+/// Pallet storage minimal implementation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PalletStorageMetadata {
-	///
+	/// Pallet prefix.
 	pub prefix: String,
-	///
+	/// Pallet storage entries.
 	pub entries: FxHashMap<String, StorageEntryMetadata>,
 }
 impl From<frame_metadata::PalletStorageMetadata<PortableForm>> for PalletStorageMetadata {
@@ -69,10 +89,10 @@ impl From<frame_metadata::PalletStorageMetadata<PortableForm>> for PalletStorage
 	}
 }
 
-///
+/// Pallet storage entry minimal implementation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct StorageEntryMetadata {
-	///
+	/// Storage entry type.
 	pub r#type: StorageEntryType,
 }
 impl KV for frame_metadata::StorageEntryMetadata<PortableForm> {
@@ -83,12 +103,12 @@ impl KV for frame_metadata::StorageEntryMetadata<PortableForm> {
 	}
 }
 
-///
+/// Storage entry type minimal implementation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum StorageEntryType {
-	///
+	/// Plain storage.
 	Plain,
-	///
+	/// Map storage.
 	Map(Vec<StorageHasher>),
 }
 impl From<frame_metadata::StorageEntryType<PortableForm>> for StorageEntryType {

@@ -97,28 +97,36 @@ impl StorageHasher {
 		}
 	}
 }
+impl AsRef<StorageHasher> for StorageHasher {
+	fn as_ref(&self) -> &Self {
+		self
+	}
+}
 
 /// Calculate the storage key of a pallet `StorageValue` item.
-pub fn storage_key<A>(pallet: A, item: A) -> StorageKey
+pub fn storage_value_key<A>(pallet: A, item: A) -> StorageKey
 where
 	A: AsRef<[u8]>,
 {
-	let mut storage_key = Vec::new();
+	let mut k = Vec::new();
 
-	storage_key.extend_from_slice(&subhasher::twox128(pallet));
-	storage_key.extend_from_slice(&subhasher::twox128(item));
+	k.extend_from_slice(&subhasher::twox128(pallet));
+	k.extend_from_slice(&subhasher::twox128(item));
 
-	storage_key.into()
+	k.into()
 }
 
 /// Calculate the storage key of a pallet `StorageNMap` item.
-pub fn storage_n_map_key<A>(pallet: A, item: A, key: (&StorageHasher, A)) -> StorageKey
+pub fn storage_n_map_key<A, Aa, Aa1, Aa2>(pallet: A, item: A, keys: Aa) -> StorageKey
 where
 	A: AsRef<[u8]>,
+	Aa: AsRef<[(Aa1, Aa2)]>,
+	Aa1: AsRef<StorageHasher>,
+	Aa2: AsRef<[u8]>,
 {
-	let mut storage_map_key = storage_key(pallet, item);
+	let mut k = storage_value_key(pallet, item);
 
-	storage_map_key.0.extend_from_slice(&key.0.hash(key.1));
+	keys.as_ref().iter().for_each(|(h, d)| k.0.extend_from_slice(&h.as_ref().hash(d)));
 
-	storage_map_key
+	k
 }

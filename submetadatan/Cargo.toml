@@ -9,6 +9,9 @@ readme               = "README.md"
 repository.workspace = true
 version.workspace    = true
 
+[features]
+cmp = []
+
 [dependencies]
 # crates.io
 array-bytes        = { workspace = true }
