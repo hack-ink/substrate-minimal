@@ -119,7 +119,7 @@ pub fn rpc(id: usize, method: &str, params: Value) -> Value {
 		"params": params
 	});
 
-	#[feature = "tracing"]
+	#[cfg(feature = "tracing")]
 	tracing::trace!("Rpc({:?})", serde_json::to_string(&rpc).unwrap());
 
 	rpc
