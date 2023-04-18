@@ -9,8 +9,15 @@ readme               = "README.md"
 repository.workspace = true
 version.workspace    = true
 
+[features]
+cmp = []
+
 [dependencies]
 # crates.io
-frame-metadata = { version = "15.1" }
-scale-info     = { version = "2.5" }
-thiserror      = { workspace = true }
+array-bytes        = { workspace = true }
+frame-metadata     = { version = "15.1" }
+fxhash             = { workspace = true }
+parity-scale-codec = { workspace = true }
+scale-info         = { workspace = true }
+substorager        = { workspace = true }
+thiserror          = { workspace = true }

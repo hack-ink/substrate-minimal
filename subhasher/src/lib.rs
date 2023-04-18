@@ -135,6 +135,11 @@ where
 	v
 }
 
+/// Return data directly.
+pub fn identity(data: &[u8]) -> &[u8] {
+	data
+}
+
 /// Hash the data into a 32-bytes array with Keccak algorithm.
 pub fn keccak256<D>(data: D) -> [u8; 32]
 where
