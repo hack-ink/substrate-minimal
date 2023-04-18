@@ -32,11 +32,11 @@ members = [
 	tracing            = { version = "0.1" }
 
 	# hack-ink
-	subcryptor   = { version = "0.9.1", path = "subcryptor" }
-	subhasher    = { version = "0.9.1", path = "subhasher" }
-	submetadatan = { version = "0.9.1", path = "submetadatan" }
-	subrpcer     = { version = "0.9.1", path = "subrpcer" }
-	subruntimer  = { version = "0.9.1", path = "subruntimer" }
-	subspector   = { version = "0.9.1", path = "subspector" }
-	substorager  = { version = "0.9.1", path = "substorager" }
-	subversioner = { version = "0.9.1", path = "subversioner" }
+	subcryptor   = { version = "0.10", path = "subcryptor" }
+	subhasher    = { version = "0.10", path = "subhasher" }
+	submetadatan = { version = "0.10", path = "submetadatan" }
+	subrpcer     = { version = "0.10", path = "subrpcer" }
+	subruntimer  = { version = "0.10", path = "subruntimer" }
+	subspector   = { version = "0.10", path = "subspector" }
+	substorager  = { version = "0.10", path = "substorager" }
+	subversioner = { version = "0.10", path = "subversioner" }
