@@ -16,7 +16,7 @@ members = [
 	homepage   = "https://substrate-minimal.hack.ink"
 	license    = "GPL-3.0"
 	repository = "https://github.com/hack-ink/substrate-minimal"
-	version    = "0.9.2"
+	version    = "0.10.0"
 
 	[workspace.dependencies]
 	# crates.io

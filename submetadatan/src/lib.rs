@@ -9,8 +9,7 @@ pub use error::Error;
 pub mod metadata;
 pub use metadata::*;
 
-#[cfg(feature = "cmp")]
-pub mod cmp;
+#[cfg(feature = "cmp")] pub mod cmp;
 
 pub use frame_metadata::{self, RuntimeMetadataV14 as LatestRuntimeMetadata};
 pub use parity_scale_codec;
