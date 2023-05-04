@@ -48,13 +48,13 @@ impl From<Vec<u8>> for StorageKey {
 	}
 }
 impl<const N: usize> From<[u8; N]> for StorageKey {
-	fn from(a: [u8; N]) -> Self {
-		Self(a.to_vec())
+	fn from(v: [u8; N]) -> Self {
+		Self(v.to_vec())
 	}
 }
 impl From<&[u8]> for StorageKey {
-	fn from(a: &[u8]) -> Self {
-		Self(a.to_vec())
+	fn from(v: &[u8]) -> Self {
+		Self(v.to_vec())
 	}
 }
 
