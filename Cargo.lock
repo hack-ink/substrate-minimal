@@ -710,9 +710,9 @@ dependencies = [
 
 [[package]]
 name = "parity-scale-codec"
-version = "3.4.0"
+version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "637935964ff85a605d114591d4d2c13c5d1ba2806dae97cea6bf180238a749ac"
+checksum = "5ddb756ca205bd108aee3c62c6d3c994e1df84a59b9d6d4a5ea42ee1fd5a9a28"
 dependencies = [
  "arrayvec 0.7.2",
  "bitvec",
@@ -1091,7 +1091,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "subcryptor"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "base58",
  "blake2-rfc",
@@ -1101,7 +1101,7 @@ dependencies = [
 
 [[package]]
 name = "subhasher"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "blake2-rfc",
  "byteorder",
@@ -1112,7 +1112,7 @@ dependencies = [
 
 [[package]]
 name = "submetadatan"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "array-bytes",
  "frame-metadata",
@@ -1125,7 +1125,7 @@ dependencies = [
 
 [[package]]
 name = "subrpcer"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "affix",
  "once_cell",
@@ -1138,14 +1138,14 @@ dependencies = [
 
 [[package]]
 name = "subruntimer"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "subspector"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "fxhash",
  "serde",
@@ -1154,7 +1154,7 @@ dependencies = [
 
 [[package]]
 name = "substorager"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "array-bytes",
  "parity-scale-codec",
@@ -1163,7 +1163,7 @@ dependencies = [
 
 [[package]]
 name = "subversioner"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "serde",
 ]
