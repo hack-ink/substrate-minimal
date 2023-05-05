@@ -119,8 +119,11 @@ pub fn rpc(id: usize, method: &str, params: Value) -> Value {
 		"params": params
 	});
 
-	#[cfg(feature = "tracing")]
-	tracing::trace!("Rpc({:?})", serde_json::to_string(&rpc).unwrap());
+	// This must not fail.
+	//
+	// `unwrap_or_default` is useless actually.
+	#[cfg(feature = "trace")]
+	tracing::trace!("Rpc({:?})", serde_json::to_string(&rpc).unwrap_or_default());
 
 	rpc
 }

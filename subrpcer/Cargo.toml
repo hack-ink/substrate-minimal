@@ -9,6 +9,22 @@ readme               = "README.md"
 repository.workspace = true
 version.workspace    = true
 
+[features]
+trace = [
+	# crates.io
+	"tracing",
+]
+
+reqwest-client = [
+	# crates.io
+	"once_cell",
+	"reqwest",
+]
+ureq-client = [
+	# crates.io
+	"ureq",
+]
+
 [dependencies]
 # crates.io
 # TODO: https://github.com/dtolnay/paste/issues/72
@@ -19,14 +35,3 @@ serde      = { workspace = true }
 serde_json = { workspace = true }
 tracing    = { workspace = true, optional = true }
 ureq       = { version = "2.6", optional = true, features = ["json"] }
-
-[features]
-reqwest-client = [
-	# crates.io
-	"once_cell",
-	"reqwest",
-]
-ureq-client = [
-	# crates.io
-	"ureq",
-]

@@ -1,5 +1,5 @@
 // substrate-minimal
-use super::*;
+use crate::*;
 
 const PUBLIC_KEY: &[u8] = &[
 	180, 247, 240, 59, 235, 197, 110, 190, 150, 188, 82, 234, 94, 211, 21, 157, 69, 160, 206, 58,

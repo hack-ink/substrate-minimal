@@ -1,5 +1,5 @@
 // substrate-minimal
-use super::*;
+use crate::*;
 
 #[test]
 fn storage_key_should_work() {
