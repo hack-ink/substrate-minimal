@@ -9,14 +9,14 @@ const PUBLIC_KEY: &[u8] = &[
 #[test]
 fn ss58_address_of_should_work() {
 	assert_eq!(
-		ss58_address_of(PUBLIC_KEY, "Polkadot",).unwrap(),
+		ss58_address_of(PUBLIC_KEY, "Polkadot").unwrap(),
 		(0, "156HGo9setPcU2qhFMVWLkcmtCEGySLwNqa3DaEiYSWtte4Y".into())
 	);
 }
 #[test]
 fn ss58_address_of_should_fail() {
 	assert_eq!(
-		ss58_address_of(&[], "invalid network",).unwrap_err().to_string(),
+		ss58_address_of(&[], "invalid network").unwrap_err().to_string(),
 		"[subcryptor] unsupported network, \"invalid network\""
 	);
 }
