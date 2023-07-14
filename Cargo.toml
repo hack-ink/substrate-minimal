@@ -9,34 +9,43 @@ members = [
 	"substorager",
 	"subversioner",
 ]
+resolver = "2"
 
-	[workspace.package]
-	authors    = ["Xavier Lau <xavier@inv.cafe>"]
-	edition    = "2021"
-	homepage   = "https://substrate-minimal.hack.ink"
-	license    = "GPL-3.0"
-	repository = "https://github.com/hack-ink/substrate-minimal"
-	version    = "0.10.1"
+[workspace.package]
+authors    = ["Xavier Lau <xavier@inv.cafe>"]
+edition    = "2021"
+homepage   = "https://substrate-minimal.hack.ink"
+license    = "GPL-3.0"
+repository = "https://github.com/hack-ink/substrate-minimal"
+version    = "0.10.1"
 
-	[workspace.dependencies]
-	# crates.io
-	array-bytes        = { version = "6.1" }
-	fxhash             = { version = "0.2" }
-	once_cell          = { version = "1.18" }
-	parity-scale-codec = { version = "3.6" }
-	reqwest            = { version = "0.11" }
-	scale-info         = { version = "2.9" }
-	serde              = { version = "1.0" }
-	serde_json         = { version = "1.0" }
-	thiserror          = { version = "1.0" }
-	tracing            = { version = "0.1" }
+[workspace.dependencies]
+# crates.io
+array-bytes        = { version = "6.1" }
+fxhash             = { version = "0.2" }
+once_cell          = { version = "1.18" }
+parity-scale-codec = { version = "3.6" }
+reqwest            = { version = "0.11" }
+scale-info         = { version = "2.9" }
+serde              = { version = "1.0" }
+serde_json         = { version = "1.0" }
+thiserror          = { version = "1.0" }
+tracing            = { version = "0.1" }
 
-	# hack-ink
-	subcryptor   = { version = "0.10", path = "subcryptor" }
-	subhasher    = { version = "0.10", path = "subhasher" }
-	submetadatan = { version = "0.10", path = "submetadatan" }
-	subrpcer     = { version = "0.10", path = "subrpcer" }
-	subruntimer  = { version = "0.10", path = "subruntimer" }
-	subspector   = { version = "0.10", path = "subspector" }
-	substorager  = { version = "0.10", path = "substorager" }
-	subversioner = { version = "0.10", path = "subversioner" }
+# hack-ink
+subcryptor   = { version = "0.10", path = "subcryptor" }
+subhasher    = { version = "0.10", path = "subhasher" }
+submetadatan = { version = "0.10", path = "submetadatan" }
+subrpcer     = { version = "0.10", path = "subrpcer" }
+subruntimer  = { version = "0.10", path = "subruntimer" }
+subspector   = { version = "0.10", path = "subspector" }
+substorager  = { version = "0.10", path = "substorager" }
+subversioner = { version = "0.10", path = "subversioner" }
+
+[profile.ci-dev]
+incremental = false
+inherits    = "dev"
+
+[profile.ci-release]
+inherits = "release"
+lto      = true
