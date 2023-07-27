@@ -15,7 +15,7 @@ cmp = []
 [dependencies]
 # crates.io
 array-bytes        = { workspace = true }
-frame-metadata     = { version = "15.2" }
+frame-metadata     = { version = "16.0" }
 fxhash             = { workspace = true }
 parity-scale-codec = { workspace = true }
 scale-info         = { workspace = true }
