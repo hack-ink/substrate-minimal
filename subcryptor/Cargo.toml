@@ -13,5 +13,5 @@ version.workspace    = true
 # crates.io
 base58        = { version = "0.2" }
 blake2-rfc    = { version = "0.2" }
-ss58-registry = { version = "1.41" }
+ss58-registry = { version = "1.42" }
 thiserror     = { workspace = true }
