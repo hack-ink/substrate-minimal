@@ -21,7 +21,7 @@ version    = "0.10.1"
 
 [workspace.dependencies]
 # crates.io
-array-bytes        = { version = "6.1" }
+array-bytes        = { version = "6.2" }
 fxhash             = { version = "0.2" }
 once_cell          = { version = "1.18" }
 parity-scale-codec = { version = "3.6" }
