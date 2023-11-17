@@ -104,9 +104,10 @@ impl AsRef<StorageHasher> for StorageHasher {
 }
 
 /// Calculate the storage key of a pallet `StorageValue` item.
-pub fn storage_value_key<A>(pallet: A, item: A) -> StorageKey
+pub fn storage_value_key<A, B>(pallet: A, item: B) -> StorageKey
 where
 	A: AsRef<[u8]>,
+	B: AsRef<[u8]>,
 {
 	let mut k = Vec::new();
 
@@ -117,12 +118,13 @@ where
 }
 
 /// Calculate the storage key of a pallet `StorageNMap` item.
-pub fn storage_n_map_key<A, Aa, Aa1, Aa2>(pallet: A, item: A, keys: Aa) -> StorageKey
+pub fn storage_n_map_key<A, B, C, C1, C2>(pallet: A, item: B, keys: C) -> StorageKey
 where
 	A: AsRef<[u8]>,
-	Aa: AsRef<[(Aa1, Aa2)]>,
-	Aa1: AsRef<StorageHasher>,
-	Aa2: AsRef<[u8]>,
+	B: AsRef<[u8]>,
+	C: AsRef<[(C1, C2)]>,
+	C1: AsRef<StorageHasher>,
+	C2: AsRef<[u8]>,
 {
 	let mut k = storage_value_key(pallet, item);
 
