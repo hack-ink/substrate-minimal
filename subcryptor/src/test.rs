@@ -17,7 +17,7 @@ fn ss58_address_of_should_work() {
 fn ss58_address_of_should_fail() {
 	assert_eq!(
 		ss58_address_of(&[], "invalid network").unwrap_err().to_string(),
-		"[subcryptor] unsupported network, \"invalid network\""
+		"unsupported network, \"invalid network\""
 	);
 }
 
@@ -31,24 +31,21 @@ fn public_key_of_should_work() {
 
 #[test]
 fn public_key_of_should_fail() {
-	assert_eq!(
-		public_key_of::<Sr25519>("").unwrap_err().to_string(),
-		"[subcryptor] invalid ss58 address, \"\""
-	);
+	assert_eq!(public_key_of::<Sr25519>("").unwrap_err().to_string(), "invalid ss58 address, \"\"");
 	assert_eq!(
 		public_key_of::<Sr25519>("?56HGo9setPcU2qhFMVWLkcmtCEGySLwNqa3DaEiYSWtte4Y")
 			.unwrap_err()
 			.to_string(),
-		"[subcryptor] from base58 error, InvalidBase58Character('?', 0)"
+		"InvalidBase58Character('?', 0)"
 	);
 	assert_eq!(
 		public_key_of::<Sr25519>("56HGo9setPcU2qhFMVWLkcmtCEGySLwNqa3DaEiYSWtte4Y")
 			.unwrap_err()
 			.to_string(),
-		"[subcryptor] invalid prefix, 180"
+		"invalid prefix, 180"
 	);
 	assert_eq!(
 		public_key_of::<Sr25519>("15").unwrap_err().to_string(),
-		"[subcryptor] invalid ss58 address, \"15\""
+		"invalid ss58 address, \"15\""
 	);
 }

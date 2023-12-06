@@ -5,8 +5,25 @@
 
 #[cfg(test)] mod test;
 
-mod error;
-pub use error::Error;
+pub mod error;
+
+mod b64;
+pub use b64::*;
+
+pub mod constant;
+
+mod keystore;
+pub use keystore::*;
+
+pub mod prelude {
+	//! Subcryptor's prelude.
+
+	pub use super::error::{self, Error};
+
+	/// Main result.
+	pub type Result<T> = std::result::Result<T, Error>;
+}
+pub use prelude::*;
 
 pub use ss58_registry;
 
@@ -14,9 +31,6 @@ pub use ss58_registry;
 use base58::{FromBase58, ToBase58};
 use blake2_rfc::blake2b::Blake2b;
 use ss58_registry::Ss58AddressFormat;
-
-/// Main result.
-pub type Result<T> = std::result::Result<T, Error>;
 
 /// Key trait.
 ///

@@ -17,7 +17,7 @@ edition    = "2021"
 homepage   = "https://substrate-minimal.hack.ink"
 license    = "GPL-3.0"
 repository = "https://github.com/hack-ink/substrate-minimal"
-version    = "0.10.1"
+version    = "0.10.2"
 
 [workspace.dependencies]
 # crates.io
