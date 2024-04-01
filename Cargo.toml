@@ -17,7 +17,7 @@ edition    = "2021"
 homepage   = "https://substrate-minimal.hack.ink"
 license    = "GPL-3.0"
 repository = "https://github.com/hack-ink/substrate-minimal"
-version    = "0.10.2"
+version    = "0.10.3"
 
 [workspace.dependencies]
 # crates.io
@@ -25,7 +25,7 @@ array-bytes        = { version = "6.2" }
 fxhash             = { version = "0.2" }
 once_cell          = { version = "1.19" }
 parity-scale-codec = { version = "3.6" }
-reqwest            = { version = "0.11" }
+reqwest            = { version = "0.12" }
 scale-info         = { version = "2.11" }
 serde              = { version = "1.0" }
 serde_json         = { version = "1.0" }

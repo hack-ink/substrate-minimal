@@ -1,3 +1,5 @@
+//! [`reqwest`] client helper for JSON-RPC.
+
 // std
 use std::sync::Arc;
 // crates.io

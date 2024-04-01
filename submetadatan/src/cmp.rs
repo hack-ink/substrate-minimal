@@ -3,9 +3,7 @@
 // std
 use std::any::TypeId;
 // crates.io
-use scale_info::{
-	form::PortableForm, interner::UntrackedSymbol, Field, Type, TypeDef, TypeParameter, Variant, *,
-};
+use scale_info::{form::PortableForm, interner::UntrackedSymbol, *};
 
 /// Compare two [`frame_metadata::StorageEntryMetadata`] and return the [`bool`] result.
 pub fn storage_entry(

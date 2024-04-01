@@ -61,8 +61,8 @@ where
 	let decrypted =
 		secret_box.decrypt(nonce.into(), cipher).map_err(error::CryptoSecretBox::General)?;
 
-	Ok(array_bytes::slice2array(&decrypted[SEED_OFFSET..SEED_OFFSET + SECRET_KEY_LEN])
-		.map_err(Error::ArrayBytes)?)
+	array_bytes::slice2array(&decrypted[SEED_OFFSET..SEED_OFFSET + SECRET_KEY_LEN])
+		.map_err(Error::ArrayBytes)
 }
 #[test]
 fn decrypt_keystore_should_work() {
