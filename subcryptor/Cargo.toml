@@ -13,9 +13,9 @@ version.workspace    = true
 # crates.io
 array-bytes      = { workspace = true }
 base58           = { version = "0.2" }
-base64           = { version = "0.21" }
+base64           = { version = "0.22" }
 blake2-rfc       = { version = "0.2" }
 crypto_secretbox = { version = "0.1" }
 scrypt           = { version = "0.11" }
-ss58-registry    = { version = "1.44" }
+ss58-registry    = { version = "1.47" }
 thiserror        = { workspace = true }
