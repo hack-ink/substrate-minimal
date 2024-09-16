@@ -23,7 +23,7 @@ version    = "0.11.1"
 # crates.io
 array-bytes        = { version = "6.2" }
 fxhash             = { version = "0.2" }
-once_cell          = { version = "1.19" }
+once_cell          = { version = "1.20" }
 parity-scale-codec = { version = "3.6" }
 reqwest            = { version = "0.12" }
 scale-info         = { version = "2.11" }
